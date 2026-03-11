@@ -69,11 +69,9 @@ if __name__ == "__main__":
     host = 'example.com'   # Replace with a real server or localhost
     port = 80              # HTTP default port
 
-    # Upload file
     upload_response = upload_file(host, port, 'example.txt')
     print("Upload response:", upload_response)
 
-    # Download file
     download_file(host, port, 'example.txt')
 ```
 
