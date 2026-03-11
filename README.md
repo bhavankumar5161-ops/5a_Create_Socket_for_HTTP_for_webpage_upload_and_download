@@ -1,3 +1,8 @@
+### REGISTER NO: 212225240026
+## DATE: 11.3.2026
+
+
+
 # 5a_Create_Socket_for_HTTP_for_webpage_upload_and_download
 ## AIM :
 To write a PYTHON program for socket for HTTP for web page upload and download
@@ -72,6 +77,9 @@ if __name__ == "__main__":
     download_file(host, port, 'example.txt')
 ```
 
-## OUTPUT
+## OUTPUT:
+
+<img width="864" height="344" alt="Screenshot 2026-03-11 111433" src="https://github.com/user-attachments/assets/c0fc3cae-1f9b-4e29-9aa6-f6803f149c69" />
+
 ## Result
 Thus the socket for HTTP for web page upload and download created and Executed
