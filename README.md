@@ -21,63 +21,73 @@ To write a PYTHON program for socket for HTTP for web page upload and download
 6.Stop the program
 <BR>
 ## Program :
+#Server.py:
+
 ```
 import socket
 
+s = socket.socket()
+s.bind(("localhost",8080))
+s.listen(1)
 
-def send_request(host, port, request):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((host, port))
-        s.sendall(request.encode())
-        response = s.recv(4096).decode()
-    return response
+print("Server running...")
 
-
-def upload_file(host, port, filename):
-    with open(filename, 'rb') as file:
-        file_data = file.read()
-        content_length = len(file_data)
-
-        request = (
-            f"POST /upload HTTP/1.1\r\n"
-            f"Host: {host}\r\n"
-            f"Content-Length: {content_length}\r\n"
-            f"Content-Type: text/plain\r\n"
-            f"\r\n"
-        )
-        request = request + file_data.decode(errors='ignore')
+while True:
+    c,addr = s.accept()
     
-    response = send_request(host, port, request)
-    return response
+    request = c.recv(1024).decode()
+    print("Request received")
 
+    if "GET" in request:
+        f = open("html.txt","r")
+        data = f.read()
+        f.close()
 
-def download_file(host, port, filename):
-    request = f"GET /{filename} HTTP/1.1\r\nHost: {host}\r\n\r\n"
-    response = send_request(host, port, request)
+        response = "HTTP/1.1 200 OK\n\n" + data
+        c.send(response.encode())
 
-    parts = response.split('\r\n\r\n', 1)
-    if len(parts) > 1:
-        file_content = parts[1]
-        with open('downloaded_' + filename, 'wb') as file:
-            file.write(file_content.encode())
-        print(f"{filename} downloaded successfully.")
-    else:
-        print("Error: No file content found in response.")
+    elif "POST" in request:
+        data = request.split("\n\n")[1]
 
+        f = open("upload.txt","w")
+        f.write(data)
+        f.close()
 
-if __name__ == "__main__":
-    host = 'example.com'   # Replace with a real server or localhost
-    port = 80              # HTTP default port
+        c.send("HTTP/1.1 200 OK\n\nFile Uploaded".encode())
 
-    upload_response = upload_file(host, port, 'example.txt')
-    print("Upload response:", upload_response)
+    c.close()
+```
+## Client.py:
+```
+import socket
 
-    download_file(host, port, 'example.txt')
+s = socket.socket()
+s.connect(("localhost",8080))
+
+ch = input("1.Download 2.Upload : ")
+
+if ch == "1":
+    req = "GET / HTTP/1.1\nHost: localhost\n\n"
+    s.send(req.encode())
+
+    data = s.recv(4096)
+    print(data.decode())
+else:
+    msg = input("Enter data to upload: ")
+
+    req = "POST / HTTP/1.1\nHost: localhost\n\n" + msg
+    s.send(req.encode())
+
+    data = s.recv(1024)
+    print(data.decode())
+
+s.close()
 ```
 
 ## OUTPUT:
 
-<img width="864" height="344" alt="Screenshot 2026-03-11 111433" src="https://github.com/user-attachments/assets/c0fc3cae-1f9b-4e29-9aa6-f6803f149c69" />
+
+<img width="943" height="569" alt="Screenshot 2026-03-17 102223" src="https://github.com/user-attachments/assets/ec3df3fc-8471-431f-ba4a-257d7d8a4609" />
 
 ## Result
 Thus the socket for HTTP for web page upload and download created and Executed
